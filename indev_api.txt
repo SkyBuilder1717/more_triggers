@@ -1,0 +1,8 @@
+-- All this API in development and doesnt work right now! --
+
+--=={[ Armor on player ]}==--
+trigger = {
+	type   = "armor",
+	armor   = {"3d_armor:chestplate_steel", "3d_armor:leggings_steel"}, -- armor on player
+	target = 2 -- count of required armor (table size)
+} 
