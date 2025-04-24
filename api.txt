@@ -2,7 +2,7 @@
 trigger = {
 	type   = "biome_visit",
 	biome   = "savanna", -- biome name. (optional)
-	target = 1, -- how many biomes player must visit (optional if biome is not empty)
+	target = 1 -- how many biomes player must visit (optional if biome is not empty)
 }
 
 --=={[ Kill mob ]}==--
@@ -29,6 +29,13 @@ trigger = {
 --=={[ Move ]}==--
 trigger = {
 	type   = "walk",
-	animation = "stand" -- what animation must player have now. All animations: "stand", "sit", "mine", "walk_mine", "walk", "lay". (optional, can be used with "player_api" mod)
-	target = 1 -- how many times player must move (move = 1 block)
+	animation = "stand" -- what animation must player have now. All animations: "stand", "sit", "mine", "walk_mine", "walk", "lay". (supported only with "player_api" mod)
+	target = 1 -- how many times player must move (1 move = 1 block)
+}
+
+--=={[ Step On ]}==--
+trigger = {
+	type = "step_on",
+	node = "default:stone", -- node, to stand for (alternative of walk, but stepping on nodes)
+	target = 10 -- how many times player must step on this node? (1 move = 1 block)
 }
