@@ -1,41 +1,48 @@
 --=={[ Biome visit ]}==--
 trigger = {
 	type   = "biome_visit",
-	biome   = "savanna", -- biome name. (optional)
+	biome  = "savanna", -- biome name. (optional)
 	target = 1 -- how many biomes player must visit (optional if biome is not empty)
 }
 
 --=={[ Kill mob ]}==--
 trigger = {
 	type   = "mob_kill",
-	biome   = "mobs_monster:mese_monster", -- mob player will kill (optional)
+	biome  = "mobs_monster:mese_monster", -- mob player will kill (optional)
 	target = 1 -- how many times player must kill mob
 }
 
 --=={[ Death by mob ]}==--
 trigger = {
 	type   = "mob_death",
-	biome   = "mobs_monster:oerkki", -- mob thats supposed to kill you (optional)
+	biome  = "mobs_monster:oerkki", -- mob thats supposed to kill you (optional)
 	target = 1 -- how many times mob must kill player
 }
 
 --=={[ Advanced chat message ]}==--
 trigger = {
-	type   = "adv_chat",
-	message   = "hi", -- message thats supposed to say by player (optional)
-	target = 1 -- how many times player must say a message
+	type    = "adv_chat",
+	message = "hi", -- message thats supposed to say by player (optional)
+	target  = 1 -- how many times player must say a message
 }
 
 --=={[ Move ]}==--
 trigger = {
-	type   = "walk",
+	type      = "walk",
 	animation = "stand" -- what animation must player have now. All animations: "stand", "sit", "mine", "walk_mine", "walk", "lay". (supported only with "player_api" mod)
-	target = 1 -- how many times player must move (1 move = 1 block)
+	target    = 1 -- how many times player must move (1 move = 1 block)
 }
 
 --=={[ Step On ]}==--
 trigger = {
-	type = "step_on",
-	node = "default:stone", -- node, to stand for (alternative of walk, but stepping on nodes)
+	type   = "step_on",
+	node   = "default:stone", -- node, to stand for (alternative of walk, but stepping on nodes)
 	target = 10 -- how many times player must step on this node? (1 move = 1 block)
 }
+
+--=={[ Armor on player ]}==--
+trigger = {
+	type   = "armor",
+	armor  = "3d_armor:boots_diamond", -- armor on player
+	target = 1
+} 
