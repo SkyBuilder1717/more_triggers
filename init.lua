@@ -1,6 +1,6 @@
 -- Please, leave a review on ContentDB!
 
-more_triggers = {required_armor = {}}
+more_triggers = {}
 
 -- Biome trigger
 awards.register_trigger("biome_visit", {
@@ -12,17 +12,18 @@ awards.register_trigger("biome_visit", {
 			if core.registered_biomes[def.trigger.biome] then
 				return def.trigger.biome
 			else
-				error("That biome you specified does not exist!")
+				error("This biome doesn't exist!")
 			end
 		end
 	end
 })
+
 core.register_globalstep(function(dtime)
     for _, player in ipairs(core.get_connected_players()) do
        local meta = player:get_meta()
        local visited_biomes = core.deserialize(meta:get_string("trig_visited_biomes")) or {}
        local biome = core.get_biome_name(core.get_biome_data(player:get_pos()).biome)
-       if table.indexof(visited_biomes, biome) == -1 then
+       if table.indexof(visited_biomes, biome) < 0 then
            table.insert(visited_biomes, biome)
 		   awards.notify_biome_visit(player, biome)
        end
@@ -41,6 +42,7 @@ awards.register_trigger("adv_chat", {
 		end
 	end
 })
+
 core.register_on_chat_message(function(name, message)
 	local player = core.get_player_by_name(name)
 	if not player:is_player() or string.find(message, "/")  then
@@ -49,40 +51,26 @@ core.register_on_chat_message(function(name, message)
 	awards.notify_adv_chat(player, message)
 end)
 
-local have_armor = function(player, itemname)
-	return core.get_inventory({type="detached", name=player:get_player_name().."_armor"}):contains_item("armor", itemname)
-end
-
 -- Armor trigger
---[[
 if core.get_modpath("3d_armor") then
 	awards.register_trigger("armor", {
 		type = "counted",
-		progress = "@1/@2 armors weared",
-		auto_description = {"Wear an armor", "Wear @1 armors"},
+		progress = "@1/@2 armor wear",
+		auto_description = {"Wear an armor", "Wear @1 armor"},
 		get_key = function(self, def)
-			table.insert(more_triggers.required_armor, def.trigger.armor)
-			return def.trigger.armor
-		end,
-	})
-	core.register_globalstep(function(dtime)
-		for _, player in pairs(core.get_connected_players()) do
-			local inv = core.get_inventory({type="detached", name=player:get_player_name().."_armor"})
-			local finds = 0
-			for _, itemstack in pairs(inv:get_list("armor")) do
-				for _, armors in pairs(more_triggers.required_armor) do
-					for _, fnd in pairs(armors) do
-						if string.find(itemstack:get_name(), fnd)  then
-							finds = finds + 1
-						end
-					end
+			if def.trigger.armor then
+				if core.registered_tools[def.trigger.armor] then
+					return def.trigger.armor
+				else
+					error("This item doesn't exist!")
 				end
 			end
-			awards.notify_armor(player, finds)
-		end
+		end,
+	})
+	armor:register_on_equip(function(player, _, stack)
+		awards.notify_armor(player, stack:get_name())
 	end)
 end
-]]--
 
 -- On steping some node
 awards.register_trigger("step_on", {
@@ -94,7 +82,7 @@ awards.register_trigger("step_on", {
 			if core.registered_nodes[def.trigger.node] then
 				return def.trigger.node
 			else
-				error("The node you specified does not exist!")
+				error("This node doesn't exist!")
 			end
 		end
 	end
@@ -112,6 +100,7 @@ if core.get_modpath("player_api") then
 			end
 		end
 	})
+
 	core.register_globalstep(function(dtime)
 		for _, player in ipairs(core.get_connected_players()) do
 			local new_pos = player:get_pos()
@@ -138,6 +127,7 @@ else
 		progress = "@1/@2 blocks passed",
 		auto_description = {"Move once", "Move @1 blocks"},
 	})
+
 	core.register_globalstep(function(dtime)
 		for _, player in ipairs(core.get_connected_players()) do
 			local new_pos = player:get_pos()
@@ -169,6 +159,7 @@ local function register_for_entity_death(name)
 		end
 	end
 end
+
 awards.register_trigger("mob_kill", {
 	type = "counted_key",
 	progress = ("@1/@2 killed"),
@@ -179,7 +170,7 @@ awards.register_trigger("mob_kill", {
 				register_for_entity_death(def.trigger.mob)
 				return def.trigger.mob
 			else
-				error("The mob you specified does not exist!")
+				error("This mob doesn't exist!")
 			end
 		end
 	end
@@ -195,23 +186,14 @@ awards.register_trigger("mob_death", {
 			if core.registered_entities[def.trigger.mob] then
 				return def.trigger.mob
 			else
-				error("The mob you specified does not exist!")
+				error("This mob doesn't exist!")
 			end
 		end
 	end
 })
+
 core.register_on_dieplayer(function(player, reason)
-	core.chat_send_all(reason.object:get_entity_name())
 	if reason.object and not reason.object:is_player() then
 		awards.notify_mob_death(player, reason.object:get_entity_name())
 	end
 end)
-
-awards.register_award("more_triggers:step", {
-	description = "step the stone",
-	trigger = {
-		type = "step_on",
-		node = "default:stone",
-		target = 10,
-	}
-})
