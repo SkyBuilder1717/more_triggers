@@ -153,7 +153,17 @@ end
 -- On kill mob trigger
 local function register_for_entity_death(name)
 	local def = core.registered_entities[name]
+	local on_die = def.on_die -- backup old functions
+	local on_death = def.on_death
+
+	def.on_die = nil -- clear on_die so that on_death executes
+
 	def.on_death = function(self, killer)
+
+		if on_die then on_die(self, self.object:get_pos()) end -- run old on_die
+
+		if on_death then on_death(self, killer) end -- run old on_death if found
+
 		if killer and killer:is_player() then
 			awards.notify_mob_kill(killer, name)
 		end
